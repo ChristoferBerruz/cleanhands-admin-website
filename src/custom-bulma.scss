@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 $primary-color-light: #39AEA7;
 $secondary-color-dark: #EEE9E9;
 
+$family-sans-serif: "Poppins", sans-serif;
 $primary:$primary-color-light;
 @import "/node_modules/bulma/bulma.sass";
