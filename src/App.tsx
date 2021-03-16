@@ -10,6 +10,7 @@ import './App.css';
 import Home from 'components/Home';
 import Profile from 'components/Profile';
 import Statistics from 'components/Statistics';
+import Report from 'components/Report';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path="/profile" component={Profile} />
           <Route path="/statistics" component={Statistics} />
+          <Route path="/report" component={Report} />
         </Switch>
       </BrowserRouter>
     </div>

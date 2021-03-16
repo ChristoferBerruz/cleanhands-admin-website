@@ -1,5 +1,5 @@
 import React from 'react';
-
+import logo from 'assets/cleanhands-logo.png';
 
 const navbarMenuID = "navbarMenu";
 
@@ -7,7 +7,7 @@ const Brand:React.FC = () => {
     return(
         <div className="navbar-brand">
             <a className="navbar-item" href="/">
-                Cleanhands
+                <img src={logo} width="112" height="48"/>
             </a>
 
             <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target={navbarMenuID}>
@@ -23,19 +23,19 @@ const Tabs:React.FC = () => {
     return(
         <div id={navbarMenuID} className="navbar-menu">
             <div className="navbar-start">
-                <a className="navbar-item">
+                <a className="navbar-item" href="/">
                     Home
                 </a>
 
-                <a className="navbar-item">
+                <a className="navbar-item" href="/report">
                     Report
                 </a>
 
-                <a className="navbar-item">
+                <a className="navbar-item" href="/statistics">
                     Statistics
                 </a>
 
-                <a className="navbar-item">
+                <a className="navbar-item" href="/profile">
                     Profile
                 </a>
             </div>
