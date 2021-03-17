@@ -1,0 +1,10 @@
+# Ignoring certain folders
+node_modules/
+public/
+
+#Ignoring some base files
+.gitignore
+package.json
+package-lock.json
+tsconfig.json
+README.json
