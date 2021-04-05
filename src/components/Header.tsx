@@ -52,7 +52,9 @@ const Tabs: React.FC = () => {
                         <a className="button is-primary">
                             <strong>Sign up</strong>
                         </a>
-                        <a className="button is-light">Log in</a>
+                        <a className="button is-light" href="/login">
+                            Log in
+                        </a>
                     </div>
                 </div>
             </div>
