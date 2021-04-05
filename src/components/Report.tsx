@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
 
 const ReportTable: React.FC = () => {
     return (
@@ -32,9 +30,7 @@ const ReportContent: React.FC = () => {
 const Report: React.FC = () => {
     return (
         <>
-            <Header />
             <ReportContent />
-            <Footer />
         </>
     );
 };

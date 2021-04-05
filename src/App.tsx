@@ -1,30 +1,31 @@
 import React from 'react';
-import {
-  BrowserRouter, 
-  Route, 
-  Switch,
-  Redirect
-} from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
-import Home from 'components/Home';
+import HomeContent from 'components/Home';
 import Profile from 'components/Profile';
 import Statistics from 'components/Statistics';
 import Report from 'components/Report';
+import Login from 'components/Login';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
 
 function App() {
-  return (
-  <div className="App">
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/statistics" component={Statistics} />
-          <Route path="/report" component={Report} />
-        </Switch>
-      </BrowserRouter>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Header />
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/" exact component={HomeContent} />
+                    <Route path="/profile" component={Profile} />
+                    <Route path="/statistics" component={Statistics} />
+                    <Route path="/report" component={Report} />
+                    <Route path="/login" component={Login} />
+                </Switch>
+            </BrowserRouter>
+            <Footer />
+        </div>
+    );
 }
 
 export default App;

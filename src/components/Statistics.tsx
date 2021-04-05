@@ -1,7 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
 import Loading from 'components/Loading';
 import { Line } from 'react-chartjs-2';
 import { ChartData } from 'chart.js';
@@ -59,9 +57,7 @@ const StatisticsContent: React.FC = () => {
 const Statistics: React.FC = () => {
     return (
         <>
-            <Header />
             <StatisticsContent />
-            <Footer />
         </>
     );
 };

@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
 
 const HomeContent: React.FC = () => {
     return (
@@ -12,14 +10,12 @@ const HomeContent: React.FC = () => {
         </div>
     );
 };
+export default HomeContent;
+
 const Home: React.FC = () => {
     return (
         <>
-            <Header />
             <HomeContent />
-            <Footer />
         </>
     );
 };
-
-export default Home;
