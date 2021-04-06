@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
-$primary-color-light: #39AEA7;
-$secondary-color-dark: #EEE9E9;
+$primary-color-light: #39aea7;
+$secondary-color-dark: #eee9e9;
 
-$family-sans-serif: "Poppins", sans-serif;
-$primary:$primary-color-light;
-@import "/node_modules/bulma/bulma.sass";
+$family-sans-serif: 'Poppins', sans-serif;
+$primary: $primary-color-light;
+@import '/node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss'; /*TODO: make icons work*/
+@import '/node_modules/@fortawesome/fontawesome-free/scss/solid.scss';
+@import '/node_modules/bulma/bulma.sass';
