@@ -6,6 +6,7 @@ const Login: React.FC = () => {
             <div className="columns container">
                 <div className="column is-one-third">
                     <div className="field">
+                        <p>Email</p>
                         <p className="control has-icons-left has-icons-right">
                             <input
                                 className="input"
@@ -21,6 +22,7 @@ const Login: React.FC = () => {
                         </p>
                     </div>
                     <div className="field">
+                        <p>Password</p>
                         <p className="control has-icons-left">
                             <input
                                 className="input"
