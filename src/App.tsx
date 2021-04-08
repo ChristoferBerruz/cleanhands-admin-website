@@ -9,21 +9,24 @@ import Report from 'components/Report';
 import Login from 'components/Login';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import LoggedInProvider from 'components/IsLoggedInContext';
 
 function App() {
     return (
         <div className="App">
-            <Header />
-            <BrowserRouter>
-                <Switch>
-                    <Route path="/" exact component={HomeContent} />
-                    <Route path="/profile" component={Profile} />
-                    <Route path="/statistics" component={Statistics} />
-                    <Route path="/report" component={Report} />
-                    <Route path="/login" component={Login} />
-                </Switch>
-            </BrowserRouter>
-            <Footer />
+            <LoggedInProvider>
+                <Header />
+                <BrowserRouter>
+                    <Switch>
+                        <Route path="/" exact component={HomeContent} />
+                        <Route path="/profile" component={Profile} />
+                        <Route path="/statistics" component={Statistics} />
+                        <Route path="/report" component={Report} />
+                        <Route path="/login" component={Login} />
+                    </Switch>
+                </BrowserRouter>
+                <Footer />
+            </LoggedInProvider>
         </div>
     );
 }

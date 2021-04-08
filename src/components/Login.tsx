@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { tryLogin, LoginBody } from 'repository/api';
 import { useForm } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
+import { useHistory } from 'react-router-dom';
+import { IsLoggedInContext } from 'components/IsLoggedInContext';
 
 const Login: React.FC = () => {
+    let history = useHistory();
     const { register, handleSubmit } = useForm();
+    const { isLoggedIn, setLoginStatus } = useContext(IsLoggedInContext);
     const onSubmit = (data: LoginBody) => {
         tryLogin(data)
-            .then((res: AxiosResponse) => alert(data))
+            .then((res: AxiosResponse) => {
+                setLoginStatus(true);
+                history.push('/profile');
+            })
             .catch((err: any) => {
                 alert('Something went wrong..' + err);
             });

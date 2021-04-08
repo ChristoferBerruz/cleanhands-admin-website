@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import logo from 'assets/cleanhands-logo.png';
+import { IsLoggedInContext } from 'components/IsLoggedInContext';
 
 const navbarMenuID = 'navbarMenu';
 
@@ -49,16 +50,24 @@ const Tabs: React.FC = () => {
             <div className="navbar-end">
                 <div className="navbar-item">
                     <div className="buttons">
-                        <a className="button is-primary">
-                            <strong>Sign up</strong>
-                        </a>
-                        <a className="button is-light" href="/login">
-                            Log in
-                        </a>
+                        <LoginOrLogoutButton />
                     </div>
                 </div>
             </div>
         </div>
+    );
+};
+
+const LoginOrLogoutButton: React.FC = () => {
+    const { isLoggedIn, setLoginStatus } = useContext(IsLoggedInContext);
+    return !isLoggedIn ? (
+        <a className="button is-light" href="/login">
+            Log in
+        </a>
+    ) : (
+        <a className="button is-light" href="/login">
+            Logout
+        </a>
     );
 };
 
