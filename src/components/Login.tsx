@@ -1,10 +1,17 @@
 import React from 'react';
 import { tryLogin, LoginBody } from 'repository/api';
 import { useForm } from 'react-hook-form';
+import axios, { AxiosResponse } from 'axios';
 
 const Login: React.FC = () => {
     const { register, handleSubmit } = useForm();
-    const onSubmit = (data: any) => alert(JSON.stringify(data));
+    const onSubmit = (data: LoginBody) => {
+        tryLogin(data)
+            .then((res: AxiosResponse) => alert(data))
+            .catch((err: any) => {
+                alert('Something went wrong..' + err);
+            });
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
