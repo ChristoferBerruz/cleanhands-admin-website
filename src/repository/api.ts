@@ -7,14 +7,41 @@ export interface LoginBody {
     [key: string]: string;
 }
 
+const instance = axios.create({
+    baseURL: 'http://64.225.55.171:5000/api/v1',
+});
 //axios.get('some api url', {withCredentials: true});
 
 export function tryLogin(credentials: LoginBody): Promise<AxiosResponse> {
+    //return instance.post('login', credentials);
     return axios({
         method: 'POST',
         url: `${baseURL}/login`,
         data: credentials,
+        withCredentials: true,
     });
+}
+
+export function tryLogout(): Promise<AxiosResponse> {
+    return axios({
+        method: 'POST',
+        url: `${baseURL}/logout`,
+        withCredentials: true,
+    });
+}
+
+export function getProfile(): Promise<AxiosResponse> {
+    return instance.get('admin', {
+        withCredentials: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
+    });
+    /*return axios({
+        method: 'GET',
+        url: `${baseURL}/logout`,
+        withCredentials: true,
+    });*/
 }
 
 export async function getDeviceData(): Promise<ChartData[]> {

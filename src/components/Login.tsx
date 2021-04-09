@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { tryLogin, LoginBody } from 'repository/api';
 import { useForm } from 'react-hook-form';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { useHistory } from 'react-router-dom';
 import { IsLoggedInContext } from 'components/IsLoggedInContext';
 
