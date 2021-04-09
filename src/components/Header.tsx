@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import logo from 'assets/cleanhands-logo.png';
 import { IsLoggedInContext } from 'components/IsLoggedInContext';
+import { tryLogout, getProfile } from 'repository/api';
+import { AxiosResponse } from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const navbarMenuID = 'navbarMenu';
 
@@ -60,12 +63,27 @@ const Tabs: React.FC = () => {
 
 const LoginOrLogoutButton: React.FC = () => {
     const { isLoggedIn, setLoginStatus } = useContext(IsLoggedInContext);
+    let history = useHistory();
+    const logout = (e: any): void => {
+        //history.push('/profile');
+        //tryLogout()
+        getProfile()
+            .then((res: AxiosResponse) => {
+                alert(res.data.stringify());
+                setLoginStatus(false);
+
+                history.push('/login');
+            })
+            .catch((err: any) => {
+                alert('Something went wrong..' + err);
+            });
+    };
     return !isLoggedIn ? (
         <a className="button is-light" href="/login">
             Log in
         </a>
     ) : (
-        <a className="button is-light" href="/login">
+        <a className="button is-light" onClick={logout}>
             Logout
         </a>
     );
