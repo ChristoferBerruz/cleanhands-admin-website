@@ -2,13 +2,14 @@ import { ChartData } from 'chart.js';
 import axios, { AxiosResponse } from 'axios';
 //const axios = require('axios').default;
 
-const baseURL: string = 'http://64.225.55.171:5000/api/v1';
+const baseURL: string =
+    'https://cleanhands-flask-server-p644b.ondigitalocean.app/api/v1';
 export interface LoginBody {
     [key: string]: string;
 }
 
 const instance = axios.create({
-    baseURL: 'http://64.225.55.171:5000/api/v1',
+    baseURL: `${baseURL}`,
 });
 //axios.get('some api url', {withCredentials: true});
 
