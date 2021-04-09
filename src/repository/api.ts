@@ -1,6 +1,5 @@
 import { ChartData } from 'chart.js';
 import axios, { AxiosResponse } from 'axios';
-//const axios = require('axios').default;
 
 const baseURL: string =
     'https://cleanhands-flask-server-p644b.ondigitalocean.app/api/v1';
@@ -11,38 +10,27 @@ export interface LoginBody {
 const instance = axios.create({
     baseURL: `${baseURL}`,
 });
-//axios.get('some api url', {withCredentials: true});
 
 export function tryLogin(credentials: LoginBody): Promise<AxiosResponse> {
-    //return instance.post('login', credentials);
-    return axios({
-        method: 'POST',
-        url: `${baseURL}/login`,
-        data: credentials,
+    return instance.post('login', credentials, {
         withCredentials: true,
     });
 }
 
 export function tryLogout(): Promise<AxiosResponse> {
-    return axios({
-        method: 'POST',
-        url: `${baseURL}/logout`,
-        withCredentials: true,
-    });
+    return instance.post(
+        'logout',
+        {},
+        {
+            withCredentials: true,
+        }
+    );
 }
 
 export function getProfile(): Promise<AxiosResponse> {
     return instance.get('admin', {
         withCredentials: true,
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-        },
     });
-    /*return axios({
-        method: 'GET',
-        url: `${baseURL}/logout`,
-        withCredentials: true,
-    });*/
 }
 
 export async function getDeviceData(): Promise<ChartData[]> {
