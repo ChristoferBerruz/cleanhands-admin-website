@@ -3,7 +3,7 @@ import logo from 'assets/cleanhands-logo.png';
 import { IsLoggedInContext } from 'components/IsLoggedInContext';
 import { tryLogout, getProfile } from 'repository/api';
 import { AxiosResponse } from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const navbarMenuID = 'navbarMenu';
 
@@ -33,21 +33,21 @@ const Tabs: React.FC = () => {
     return (
         <div id={navbarMenuID} className="navbar-menu">
             <div className="navbar-start">
-                <a className="navbar-item" href="/">
+                <Link className="navbar-item" to="/">
                     Home
-                </a>
+                </Link>
 
-                <a className="navbar-item" href="/report">
+                <Link className="navbar-item" to="/report">
                     Report
-                </a>
+                </Link>
 
-                <a className="navbar-item" href="/statistics">
+                <Link className="navbar-item" to="/statistics">
                     Statistics
-                </a>
+                </Link>
 
-                <a className="navbar-item" href="/profile">
+                <Link className="navbar-item" to="/profile">
                     Profile
-                </a>
+                </Link>
             </div>
 
             <div className="navbar-end">
