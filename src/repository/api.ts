@@ -38,6 +38,14 @@ export function changeName(
     );
 }
 
+export function changePassword(
+    passwordUpdateBody: LoginBody
+): Promise<AxiosResponse> {
+    return instance.post('admin/update-password', passwordUpdateBody, {
+        withCredentials: true,
+    });
+}
+
 export function getProfile(): Promise<AxiosResponse> {
     return instance.get('admin', {
         withCredentials: true,
