@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, createContext } from 'react';
 import {
     getProfile,
     changeName,
@@ -56,6 +56,7 @@ const ChangeNameForm: React.FC<ProfileSummaryProps> = ({ info }) => {
     const [showSubmit, setShowSubmit] = useState(false);
     const [isLoading, setLoading] = useState(false);
 
+    const { setProfileInfo } = useContext(UserProfileContext);
     async function handleSubmit(event: any) {
         event.preventDefault();
         setLoading(true);
@@ -63,8 +64,15 @@ const ChangeNameForm: React.FC<ProfileSummaryProps> = ({ info }) => {
             await changeName(firstname, lastname);
             setFirstName(firstname);
             setLastName(lastname);
-            alert('Succesfully update your information!');
+            const profileInfo: ProfileInfo = {
+                firstname: firstname,
+                lastname: lastname,
+                organization: info.organization,
+                email: info.email,
+            };
             setLoading(false);
+            setProfileInfo(profileInfo);
+            alert('Succesfully update your information!');
         } catch (e) {
             alert(`Something went wrong: ${e}`);
         }
@@ -217,7 +225,7 @@ const ChangePassword: React.FC = () => {
 };
 
 const ProfileContent: React.FC = () => {
-    const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
+    const { profileInfo, setProfileInfo } = useContext(UserProfileContext);
     useEffect(() => {
         getProfile()
             .then((res: AxiosResponse) => {
@@ -254,10 +262,31 @@ const ProfileContent: React.FC = () => {
     );
 };
 
+interface IUserProfileContext {
+    profileInfo: ProfileInfo | null;
+    setProfileInfo: Function;
+}
+
+const UserProfileContext = createContext<IUserProfileContext>({
+    profileInfo: null,
+    setProfileInfo: new Function(),
+});
+
+const UserProfileProvider: React.FC = ({ children }) => {
+    const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
+    return (
+        <UserProfileContext.Provider value={{ profileInfo, setProfileInfo }}>
+            {children}
+        </UserProfileContext.Provider>
+    );
+};
+
 const Profile: React.FC = () => {
     return (
         <>
-            <ProfileContent />
+            <UserProfileProvider>
+                <ProfileContent />
+            </UserProfileProvider>
         </>
     );
 };
