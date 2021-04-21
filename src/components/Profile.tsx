@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { getProfile } from 'repository/api';
+import { getProfile, changeName } from 'repository/api';
 import { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
+import Loading from 'components/Loading';
 
 export interface ProfileInfo {
     firstname: string;
@@ -10,7 +11,11 @@ export interface ProfileInfo {
     organization: string;
 }
 
-const ProfileSummary: React.FC<ProfileInfo> = ({info: ProfileInfo) => {
+export interface ProfileSummaryProps {
+    info: ProfileInfo;
+}
+
+const ProfileSummary: React.FC<ProfileSummaryProps> = ({ info }) => {
     let { firstname, lastname, email, organization } = info;
     return (
         <div className="card">
@@ -31,9 +36,7 @@ const ProfileSummary: React.FC<ProfileInfo> = ({info: ProfileInfo) => {
                 </div>
 
                 <div className="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                    <a href="#">#css</a> <a href="#">#responsive</a>
+                    <span>Organization: {organization}</span>
                     <br />
                 </div>
             </div>
@@ -41,23 +44,91 @@ const ProfileSummary: React.FC<ProfileInfo> = ({info: ProfileInfo) => {
     );
 };
 
+const ShowChangeName: React.FC<ProfileSummaryProps> = ({ info }) => {
+    const [firstname, setFirstName] = useState<string>(info.firstname);
+    const [lastname, setLastName] = useState<string>(info.lastname);
+    const [showSubmit, setShowSubmit] = useState(false);
+
+    async function handleSubmit(event: any) {
+        event.preventDefault();
+        try {
+            await changeName(firstname, lastname);
+            setFirstName(firstname);
+            setLastName(lastname);
+            alert('Succesfully update your information!');
+        } catch (e) {
+            alert(`Something went wrong: ${e}`);
+        }
+    }
+
+    let FirstNameInput = showSubmit ? (
+        <input
+            className="input"
+            type="text"
+            value={firstname}
+            onChange={(event) => setFirstName(event.target.value!)}
+        />
+    ) : (
+        <input className="input" type="text" value={firstname} readOnly />
+    );
+
+    let LastNameInput = showSubmit ? (
+        <input
+            className="input"
+            type="text"
+            value={lastname}
+            onChange={(event) => setLastName(event.target.value!)}
+        />
+    ) : (
+        <input className="input" type="text" value={lastname} readOnly />
+    );
+
+    let cancelSubmitBtn = showSubmit && (
+        <button className="button" onClick={() => setShowSubmit(false)}>
+            Cancel
+        </button>
+    );
+
+    let editBtn = !showSubmit && (
+        <button className="button" onClick={() => setShowSubmit(true)}>
+            Edit fields
+        </button>
+    );
+
+    let submitBtn = showSubmit && (
+        <button className="button" type="submit">
+            Submit changes
+        </button>
+    );
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="field">
+                <label className="label">Firstname</label>
+                <div className="control">{FirstNameInput}</div>
+            </div>
+            <div className="field">
+                <label className="label">Lastname</label>
+                <div className="control">{LastNameInput}</div>
+            </div>
+            {cancelSubmitBtn}
+            {submitBtn}
+            {editBtn}
+        </form>
+    );
+};
+
 const ProfileContent: React.FC = () => {
-    const [firstname, setFirstName] = useState('');
-    const [lastname, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [organization, setOrg] = useState('');
-    let profile = {
-        firstname,
-        lastname,
-        email,
-        organization,
-    };
+    const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
     getProfile()
         .then((res: AxiosResponse) => {
-            setFirstName(res.data['firstname']);
-            setLastName(res.data['lastname']);
-            setEmail(res.data['email']);
-            setOrg(res.data['organization']);
+            const userProfile = {
+                firstname: res.data['firstname'],
+                lastname: res.data['lastname'],
+                email: res.data['email'],
+                organization: res.data['organization'],
+            };
+            setProfileInfo(userProfile);
         })
         .catch((err: any) => {
             alert('Something went wrong..' + err);
@@ -65,10 +136,18 @@ const ProfileContent: React.FC = () => {
     return (
         <div className="section">
             <div className="columns container">
-                <div className="column is-one-third">
-                    <ProfileSummary info={profile} />
-                </div>
-                <div className="column">Some information about you</div>
+                {!profileInfo ? (
+                    <Loading />
+                ) : (
+                    <>
+                        <div className="column is-one-third">
+                            <ProfileSummary info={profileInfo!} />
+                        </div>
+                        <div className="column">
+                            <ShowChangeName info={profileInfo!} />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
