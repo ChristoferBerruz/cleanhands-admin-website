@@ -70,11 +70,12 @@ const ChangeNameForm: React.FC<ProfileSummaryProps> = ({ info }) => {
                 organization: info.organization,
                 email: info.email,
             };
-            setLoading(false);
             setProfileInfo(profileInfo);
             alert('Succesfully update your information!');
         } catch (e) {
             alert(`Something went wrong: ${e}`);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -166,9 +167,10 @@ const UpdatePasswordForm: React.FC = () => {
         try {
             await changePassword(data);
             alert('Succesfully updated your password');
-            setLoading(false);
         } catch (e) {
             alert(`Please provide a valid current password.`);
+        } finally {
+            setLoading(false);
         }
     }
 
