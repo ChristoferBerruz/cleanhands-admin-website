@@ -152,14 +152,30 @@ const PersonalInfo: React.FC<ProfileSummaryProps> = ({ info }) => {
 
 const UpdatePasswordForm: React.FC = () => {
     const { register, handleSubmit } = useForm();
+    const [isLoading, setLoading] = useState(false);
     async function onSubmit(data: LoginBody) {
+        setLoading(true);
         try {
             await changePassword(data);
             alert('Succesfully updated your password');
+            setLoading(false);
         } catch (e) {
             alert(`Please provide a valid current password.`);
         }
     }
+
+    let submitBtn = isLoading ? (
+        <button
+            className="button is-primary is-normal is-loading"
+            type="submit"
+        >
+            Update password
+        </button>
+    ) : (
+        <button className="button is-primary is-normal" type="submit">
+            Update password
+        </button>
+    );
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="field">
@@ -185,14 +201,7 @@ const UpdatePasswordForm: React.FC = () => {
                 </div>
             </div>
             <div className="field">
-                <div className="control">
-                    <button
-                        className="button is-primary is-normal"
-                        type="submit"
-                    >
-                        Update password
-                    </button>
-                </div>
+                <div className="control">{submitBtn}</div>
             </div>
         </form>
     );
