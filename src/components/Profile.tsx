@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import { getProfile, changeName } from 'repository/api';
+import React, { useEffect, useState } from 'react';
+import {
+    getProfile,
+    changeName,
+    changePassword,
+    LoginBody,
+} from 'repository/api';
 import { AxiosResponse } from 'axios';
 import { NavLink } from 'react-router-dom';
 import Loading from 'components/Loading';
+import { useForm } from 'react-hook-form';
 
 export interface ProfileInfo {
     firstname: string;
@@ -44,18 +50,21 @@ const ProfileSummary: React.FC<ProfileSummaryProps> = ({ info }) => {
     );
 };
 
-const ShowChangeName: React.FC<ProfileSummaryProps> = ({ info }) => {
+const ChangeNameForm: React.FC<ProfileSummaryProps> = ({ info }) => {
     const [firstname, setFirstName] = useState<string>(info.firstname);
     const [lastname, setLastName] = useState<string>(info.lastname);
     const [showSubmit, setShowSubmit] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
     async function handleSubmit(event: any) {
         event.preventDefault();
+        setLoading(true);
         try {
             await changeName(firstname, lastname);
             setFirstName(firstname);
             setLastName(lastname);
             alert('Succesfully update your information!');
+            setLoading(false);
         } catch (e) {
             alert(`Something went wrong: ${e}`);
         }
@@ -84,22 +93,34 @@ const ShowChangeName: React.FC<ProfileSummaryProps> = ({ info }) => {
     );
 
     let cancelSubmitBtn = showSubmit && (
-        <button className="button" onClick={() => setShowSubmit(false)}>
+        <button
+            className="button is-danger"
+            onClick={() => setShowSubmit(false)}
+        >
             Cancel
         </button>
     );
 
     let editBtn = !showSubmit && (
-        <button className="button" onClick={() => setShowSubmit(true)}>
+        <button
+            className="button is-primary"
+            onClick={() => setShowSubmit(true)}
+        >
             Edit fields
         </button>
     );
 
-    let submitBtn = showSubmit && (
-        <button className="button" type="submit">
-            Submit changes
-        </button>
-    );
+    let submitBtn =
+        showSubmit &&
+        (isLoading ? (
+            <button className="button is-primary is-loading" type="submit">
+                Submit changes
+            </button>
+        ) : (
+            <button className="button is-primary" type="submit">
+                Submit changes
+            </button>
+        ));
 
     return (
         <form onSubmit={handleSubmit}>
@@ -111,28 +132,98 @@ const ShowChangeName: React.FC<ProfileSummaryProps> = ({ info }) => {
                 <label className="label">Lastname</label>
                 <div className="control">{LastNameInput}</div>
             </div>
-            {cancelSubmitBtn}
-            {submitBtn}
-            {editBtn}
+            <div className="buttons">
+                {cancelSubmitBtn}
+                {submitBtn}
+                {editBtn}
+            </div>
         </form>
+    );
+};
+
+const PersonalInfo: React.FC<ProfileSummaryProps> = ({ info }) => {
+    return (
+        <div className="section">
+            <h2 className="title">Personal info</h2>
+            <ChangeNameForm info={info} />
+        </div>
+    );
+};
+
+const UpdatePasswordForm: React.FC = () => {
+    const { register, handleSubmit } = useForm();
+    async function onSubmit(data: LoginBody) {
+        try {
+            await changePassword(data);
+            alert('Succesfully updated your password');
+        } catch (e) {
+            alert(`Please provide a valid current password.`);
+        }
+    }
+    return (
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="field">
+                <label className="label">Current Password</label>
+                <div className="control">
+                    <input
+                        {...register('current_password')}
+                        className="input"
+                        placeholder="Current password"
+                        type="password"
+                    />
+                </div>
+            </div>
+            <div className="field">
+                <label className="label">New Password</label>
+                <div className="control">
+                    <input
+                        {...register('new_password')}
+                        className="input"
+                        placeholder="New password"
+                        type="password"
+                    />
+                </div>
+            </div>
+            <div className="field">
+                <div className="control">
+                    <button
+                        className="button is-primary is-normal"
+                        type="submit"
+                    >
+                        Update password
+                    </button>
+                </div>
+            </div>
+        </form>
+    );
+};
+
+const ChangePassword: React.FC = () => {
+    return (
+        <div className="section">
+            <h2 className="title">Update your password</h2>
+            <UpdatePasswordForm />
+        </div>
     );
 };
 
 const ProfileContent: React.FC = () => {
     const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
-    getProfile()
-        .then((res: AxiosResponse) => {
-            const userProfile = {
-                firstname: res.data['firstname'],
-                lastname: res.data['lastname'],
-                email: res.data['email'],
-                organization: res.data['organization'],
-            };
-            setProfileInfo(userProfile);
-        })
-        .catch((err: any) => {
-            alert('Something went wrong..' + err);
-        });
+    useEffect(() => {
+        getProfile()
+            .then((res: AxiosResponse) => {
+                const userProfile = {
+                    firstname: res.data['firstname'],
+                    lastname: res.data['lastname'],
+                    email: res.data['email'],
+                    organization: res.data['organization'],
+                };
+                setProfileInfo(userProfile);
+            })
+            .catch((err: any) => {
+                alert('Something went wrong..' + err);
+            });
+    }, []);
     return (
         <div className="section">
             <div className="columns container">
@@ -144,7 +235,8 @@ const ProfileContent: React.FC = () => {
                             <ProfileSummary info={profileInfo!} />
                         </div>
                         <div className="column">
-                            <ShowChangeName info={profileInfo!} />
+                            <PersonalInfo info={profileInfo!} />
+                            <ChangePassword />
                         </div>
                     </>
                 )}
