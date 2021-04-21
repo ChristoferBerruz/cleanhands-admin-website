@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import logo from 'assets/cleanhands-logo.png';
 import { IsLoggedInContext } from 'components/IsLoggedInContext';
-import { tryLogout, getProfile } from 'repository/api';
+import { tryLogout } from 'repository/api';
 import { AxiosResponse } from 'axios';
 import { useHistory, Link } from 'react-router-dom';
 
