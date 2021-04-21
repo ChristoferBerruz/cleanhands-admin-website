@@ -27,6 +27,17 @@ export function tryLogout(): Promise<AxiosResponse> {
     );
 }
 
+export function changeName(
+    firstname: string,
+    lastname: string
+): Promise<AxiosResponse> {
+    return instance.patch(
+        'admin',
+        { firstname: firstname, lastname: lastname },
+        { withCredentials: true }
+    );
+}
+
 export function getProfile(): Promise<AxiosResponse> {
     return instance.get('admin', {
         withCredentials: true,
