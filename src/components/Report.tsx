@@ -35,21 +35,31 @@ const ButtonCollection: React.FC = () => {
     const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
     useEffect(() => {
         getDevicesForAdmin()
-            .then((devices: number[]) => setDevicesList(devices))
+            .then((devices: number[]) => {
+                setDevicesList(devices);
+                setDeviceId(devices[0]);
+            })
             .catch((err: any) => alert(err));
     }, []);
-
     const buttonHandler =
         devicesList &&
-        devicesList.map((deviceNum, idx) => (
-            <button
-                className="button is-primary"
-                key={deviceNum}
-                onClick={() => setDeviceId(deviceNum)}
-            >
-                Device {idx + 1}
-            </button>
-        ));
+        devicesList.map((deviceNum, idx) => {
+            const cssApplied =
+                deviceNum === deviceId
+                    ? 'button is-primary'
+                    : 'button is-primary is-light';
+            return (
+                <button
+                    className={cssApplied} //is-light
+                    key={deviceNum}
+                    onClick={() => {
+                        setDeviceId(deviceNum);
+                    }}
+                >
+                    Device {idx + 1}
+                </button>
+            );
+        });
 
     return !devicesList ? (
         <Loading />
@@ -72,7 +82,6 @@ const ReportContent: React.FC = () => {
             getHandwashingRecords(deviceId, sevenDaysAgoDate, now)
                 .then((records: HandwashingRecord[]) => {
                     setRecords(records);
-                    console.log(records[0]);
                 })
                 .catch((err: any) => alert(err));
     }, [deviceId]);
@@ -92,7 +101,7 @@ const ReportContent: React.FC = () => {
     return !deviceId ? (
         <tbody>
             <tr>
-                <td>No gathered data!</td>
+                <td>Please select a device.</td>
             </tr>
         </tbody>
     ) : (
