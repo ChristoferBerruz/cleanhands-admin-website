@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useContext, createContext } from 'react';
 import Loading from 'components/Loading';
-import {
-    getDevicesForAdmin,
-    getHandwashingRecords,
-    HandwashingRecord,
-} from 'repository/api';
+import { getDevicesForAdmin, getRecordsGroupByDate } from 'repository/api';
 
 const ReportTable: React.FC = () => {
     //const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
@@ -68,9 +64,17 @@ const ButtonCollection: React.FC = () => {
     );
 };
 
+interface HandwashRow {
+    date: string;
+    avgDuration: number;
+    minDuration: number;
+    maxDuration: number;
+    numOfUsers: number;
+}
+
 const ReportContent: React.FC = () => {
     const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
-    const [records, setRecords] = useState<HandwashingRecord[] | null>(null);
+    const [records, setRecords] = useState<HandwashRow[] | null>(null);
     //Get current date using the JavaScript Date object.
     const now: Date = new Date();
     //Change it so that it is 7 days in the past.
@@ -79,22 +83,40 @@ const ReportContent: React.FC = () => {
 
     useEffect(() => {
         deviceId &&
-            getHandwashingRecords(deviceId, sevenDaysAgoDate, now)
-                .then((records: HandwashingRecord[]) => {
-                    setRecords(records);
+            getRecordsGroupByDate(deviceId, sevenDaysAgoDate, now)
+                .then((records: Record<string, number[]>) => {
+                    const result: HandwashRow[] = [];
+                    for (const date in records) {
+                        const durs: number[] = records[date];
+                        const arrAvgFun = (durs: number[]) => {
+                            return (
+                                durs.reduce((a, b) => a + b, 0) / durs.length
+                            );
+                        };
+                        const avgDuration = arrAvgFun(durs);
+                        let row: HandwashRow = {
+                            date: date,
+                            avgDuration: avgDuration,
+                            minDuration: Math.min(...durs),
+                            maxDuration: Math.max(...durs),
+                            numOfUsers: durs.length,
+                        };
+                        result.push(row);
+                    }
+                    setRecords(result);
                 })
                 .catch((err: any) => alert(err));
     }, [deviceId]);
 
     const Row =
         records &&
-        records.map((record: HandwashingRecord) => (
+        records.map((record: HandwashRow) => (
             <tr>
-                <td>{record.timestamp}</td>
-                <td>{record.duration}</td>
-                <td>{record.duration}</td>
-                <td>{record.duration}</td>
-                <td>1</td>
+                <td>{record.date}</td>
+                <td>{record.avgDuration.toFixed(2)}</td>
+                <td>{record.maxDuration}</td>
+                <td>{record.minDuration}</td>
+                <td>{record.numOfUsers}</td>
             </tr>
         ));
 
