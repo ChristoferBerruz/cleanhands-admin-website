@@ -240,7 +240,7 @@ export async function getRecordsGroupByDate(
     deviceID: number,
     startDate: Date,
     endDate: Date
-): Promise<FilteredHandwashRecord[]> {
+): Promise<Record<string, FilteredHandwashRecord[]>> {
     let records = await getHandwashingRecords(deviceID, startDate, endDate);
 
     let filteredRecords = records.map((record) => {
@@ -250,5 +250,6 @@ export async function getRecordsGroupByDate(
         };
         return obj;
     });
-    return filteredRecords;
+    let recordGroupByDate = groupBy(filteredRecords, (record) => record.date);
+    return recordGroupByDate;
 }
