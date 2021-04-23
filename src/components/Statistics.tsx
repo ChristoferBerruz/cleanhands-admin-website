@@ -9,18 +9,24 @@ import {
     getDevicesForAdmin,
 } from 'repository/api';
 
+import { PlottingInfo } from 'repository/api';
+
 const GraphChart: React.FC = () => {
     const { statisticInfo } = useContext(StatisticsContext);
     let deviceID = statisticInfo!.deviceID;
-    const [data, setData] = useState<ChartData | null>(null);
+    const [plottingInfo, setPlottingInfo] = useState<PlottingInfo | null>(null);
     useEffect(() => {
         const endDate = new Date('2021-04-22');
         const startDate = new Date('2021-04-15');
-        getRecordsAsChartData(deviceID, startDate, endDate).then((dat) =>
-            setData(dat)
+        getRecordsAsChartData(deviceID, startDate, endDate).then((info) =>
+            setPlottingInfo(info)
         );
     }, [statisticInfo]);
-    return !data ? <Loading /> : <Line data={data}></Line>;
+    return !plottingInfo ? (
+        <Loading />
+    ) : (
+        <Line data={plottingInfo.data} options={plottingInfo.options}></Line>
+    );
 };
 
 const GraphArea: React.FC = () => {
@@ -65,13 +71,16 @@ const StatisticsContent: React.FC = () => {
         .then((data) => console.log(data))
         .catch((err) => console.log(err));
     return (
-        <div className="section">
-            <div className="columns">
-                <div className="column is-third">
-                    <DeviceIDCollectionBtn />
-                </div>
-                <div className="column">
-                    <GraphArea />
+        <div className="container">
+            <div className="section">
+                <h1 className="title"> Quickly visualize your data</h1>
+                <div className="columns">
+                    <div className="column is-3">
+                        <DeviceIDCollectionBtn />
+                    </div>
+                    <div className="column is-9">
+                        <GraphArea />
+                    </div>
                 </div>
             </div>
         </div>
