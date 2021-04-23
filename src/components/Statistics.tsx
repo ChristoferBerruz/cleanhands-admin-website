@@ -48,7 +48,7 @@ const StartDatePicker: React.FC = () => {
         [startDate]
     );
     return (
-        <>
+        <div className="column">
             Start date:
             <DatePicker
                 calendarAriaLabel="Select end date"
@@ -61,7 +61,7 @@ const StartDatePicker: React.FC = () => {
                 clearIcon={null}
                 onChange={(date) => setStartDate(date as Date)}
             ></DatePicker>
-        </>
+        </div>
     );
 };
 
@@ -72,7 +72,7 @@ const EndDatePicker: React.FC = () => {
         endDate,
     ]);
     return (
-        <>
+        <div className="column">
             End date:
             <DatePicker
                 calendarAriaLabel="Select end date"
@@ -85,7 +85,7 @@ const EndDatePicker: React.FC = () => {
                 clearIcon={null}
                 onChange={(date) => setEndDate(date as Date)}
             ></DatePicker>
-        </>
+        </div>
     );
 };
 
@@ -103,17 +103,26 @@ const DeviceIDCollectionBtn: React.FC = () => {
 
     const buttonHandler =
         devicesList &&
-        devicesList.map((deviceNum, idx) => (
-            <button
-                key={deviceNum}
-                className="button is-primary"
-                onClick={() =>
-                    setStatisticsInfo({ ...statisticInfo, deviceID: deviceNum })
-                }
-            >
-                Device {idx + 1}
-            </button>
-        ));
+        devicesList.map((deviceNum, idx) => {
+            const css =
+                statisticInfo?.deviceID === deviceNum
+                    ? 'button is-primary'
+                    : 'button is-primary is-light';
+            return (
+                <button
+                    key={deviceNum}
+                    className={css}
+                    onClick={() =>
+                        setStatisticsInfo({
+                            ...statisticInfo,
+                            deviceID: deviceNum,
+                        })
+                    }
+                >
+                    Device {idx + 1}
+                </button>
+            );
+        });
 
     return !devicesList ? (
         <Loading />
