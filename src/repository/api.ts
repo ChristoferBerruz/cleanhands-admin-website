@@ -118,7 +118,7 @@ export function getDevicesForAdmin(): Promise<Array<number>> {
             });
 
             let adminModel = response.data;
-            resolve(adminModel.devices);
+            resolve(adminModel.devices.sort());
         } catch (err) {
             reject(err);
         }
