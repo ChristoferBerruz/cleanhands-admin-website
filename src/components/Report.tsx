@@ -1,19 +1,18 @@
 import React, { useEffect, useState, useContext, createContext } from 'react';
 import Loading from 'components/Loading';
-import { getDevicesForAdmin } from 'repository/api';
+import {
+    getDevicesForAdmin,
+    getHandwashingRecords,
+    HandwashingRecord,
+} from 'repository/api';
 
 const ReportTable: React.FC = () => {
-    const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
-    useEffect;
-    //need to know corespondence between 1,2,3 and devices id via useEffect
+    //const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
 
     return (
         <div className="section">
             <div className="container">
                 <ButtonCollection />
-            </div>
-
-            <div className="container">
                 <table className="table is-bordered">
                     <thead>
                         <tr>
@@ -36,17 +35,20 @@ const ButtonCollection: React.FC = () => {
     const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
     useEffect(() => {
         getDevicesForAdmin()
-            .then((devices: any) => setDevicesList(devices))
+            .then((devices: number[]) => setDevicesList(devices))
             .catch((err: any) => alert(err));
     }, []);
 
     const buttonHandler =
         devicesList &&
-        devicesList.map((deviceNum) => (
+        devicesList.map((deviceNum, idx) => (
             <button
+                className="button is-primary"
                 key={deviceNum}
                 onClick={() => setDeviceId(deviceNum)}
-            ></button>
+            >
+                Device {idx + 1}
+            </button>
         ));
 
     return !devicesList ? (
@@ -58,14 +60,46 @@ const ButtonCollection: React.FC = () => {
 
 const ReportContent: React.FC = () => {
     const { deviceId, setDeviceId } = useContext(SelectedDeviceContext);
+    const [records, setRecords] = useState<HandwashingRecord[] | null>(null);
+    //Get current date using the JavaScript Date object.
+    const now: Date = new Date();
+    //Change it so that it is 7 days in the past.
+    const sevenDaysAgoDate = new Date(now);
+    sevenDaysAgoDate.setDate(now.getDate() - 7);
 
-    return (
+    useEffect(() => {
+        deviceId &&
+            getHandwashingRecords(deviceId, sevenDaysAgoDate, now)
+                .then((records: HandwashingRecord[]) => {
+                    setRecords(records);
+                    console.log(records[0]);
+                })
+                .catch((err: any) => alert(err));
+    }, [deviceId]);
+
+    const Row =
+        records &&
+        records.map((record: HandwashingRecord) => (
+            <tr>
+                <td>{record.timestamp}</td>
+                <td>{record.duration}</td>
+                <td>{record.duration}</td>
+                <td>{record.duration}</td>
+                <td>1</td>
+            </tr>
+        ));
+
+    return !deviceId ? (
         <tbody>
-            !deviceId ? ( ) : (<td>Nothing yet!</td>
-            );
+            <tr>
+                <td>No gathered data!</td>
+            </tr>
         </tbody>
+    ) : (
+        <tbody>{Row}</tbody>
     );
 };
+
 const Report: React.FC = () => {
     return (
         <>
