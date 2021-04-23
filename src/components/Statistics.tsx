@@ -10,6 +10,7 @@ import {
 } from 'repository/api';
 
 import { PlottingInfo } from 'repository/api';
+import DatePicker from 'react-date-picker';
 
 const GraphChart: React.FC = () => {
     const { statisticInfo } = useContext(StatisticsContext);
@@ -42,30 +43,50 @@ const StartDatePicker: React.FC = () => {
         weekAgo.setDate(now.getDate() - 7);
         return weekAgo;
     });
-
-    function handleChange(date: Date) {
-        setStartDate(date);
-        setStatisticsInfo({ ...statisticInfo, startDate: date });
-    }
     useEffect(
         () => setStatisticsInfo({ ...statisticInfo, startDate: startDate }),
-        []
+        [startDate]
     );
-    return <p>{startDate.toDateString()}</p>;
+    return (
+        <>
+            Start date:
+            <DatePicker
+                calendarAriaLabel="Select end date"
+                clearAriaLabel="Clear value"
+                dayAriaLabel="Day"
+                monthAriaLabel="Month"
+                nativeInputAriaLabel="Date"
+                yearAriaLabel="Year"
+                value={startDate}
+                clearIcon={null}
+                onChange={(date) => setStartDate(date as Date)}
+            ></DatePicker>
+        </>
+    );
 };
 
 const EndDatePicker: React.FC = () => {
     const { statisticInfo, setStatisticsInfo } = useContext(StatisticsContext);
     const [endDate, setEndDate] = useState<Date>(new Date());
-    function handleChange(date: Date) {
-        setEndDate(date);
-        setStatisticsInfo({ ...statisticInfo, endDate: date });
-    }
-    useEffect(
-        () => setStatisticsInfo({ ...statisticInfo, endDate: endDate }),
-        []
+    useEffect(() => setStatisticsInfo({ ...statisticInfo, endDate: endDate }), [
+        endDate,
+    ]);
+    return (
+        <>
+            End date:
+            <DatePicker
+                calendarAriaLabel="Select end date"
+                clearAriaLabel="Clear value"
+                dayAriaLabel="Day"
+                monthAriaLabel="Month"
+                nativeInputAriaLabel="Date"
+                yearAriaLabel="Year"
+                value={endDate}
+                clearIcon={null}
+                onChange={(date) => setEndDate(date as Date)}
+            ></DatePicker>
+        </>
     );
-    return <p>{endDate.toDateString()}</p>;
 };
 
 const DeviceIDCollectionBtn: React.FC = () => {

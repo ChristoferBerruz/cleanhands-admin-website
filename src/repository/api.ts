@@ -235,3 +235,20 @@ export async function getRecordsAsChartData(
 
     return { data: result, options: options };
 }
+
+export async function getRecordsGroupByDate(
+    deviceID: number,
+    startDate: Date,
+    endDate: Date
+): Promise<FilteredHandwashRecord[]> {
+    let records = await getHandwashingRecords(deviceID, startDate, endDate);
+
+    let filteredRecords = records.map((record) => {
+        let obj: FilteredHandwashRecord = {
+            duration: record.duration,
+            date: new Date(record.timestamp).toLocaleString().split(',')[0],
+        };
+        return obj;
+    });
+    return filteredRecords;
+}
