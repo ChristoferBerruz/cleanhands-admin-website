@@ -1,4 +1,4 @@
-import { ChartData } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
 import axios, { AxiosResponse } from 'axios';
 
 const baseURL: string =
@@ -171,11 +171,15 @@ const groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>
         return previous;
     }, {} as Record<K, T[]>);
 
+export interface PlottingInfo {
+    data: ChartData;
+    options: ChartOptions;
+}
 export async function getRecordsAsChartData(
     deviceID: number,
     startDate: Date,
     endDate: Date
-): Promise<ChartData> {
+): Promise<PlottingInfo> {
     let records = await getHandwashingRecords(deviceID, startDate, endDate);
 
     let filteredRecords = records.map((record) => {
@@ -200,6 +204,7 @@ export async function getRecordsAsChartData(
         labels: labels,
         datasets: [
             {
+                label: 'Average handwashing time',
                 data: data,
                 fill: true,
                 backgroundColor: 'rgba(75,192,192,0.2)',
@@ -207,6 +212,26 @@ export async function getRecordsAsChartData(
             },
         ],
     };
+    let options = {
+        scales: {
+            yAxes: [
+                {
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Average handwashing time',
+                    },
+                },
+            ],
+            xAxes: [
+                {
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date',
+                    },
+                },
+            ],
+        },
+    };
 
-    return result;
+    return { data: result, options: options };
 }
