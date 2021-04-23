@@ -156,3 +156,57 @@ export function getHandwashingRecords(
         }
     });
 }
+
+interface FilteredHandwashRecord {
+    date: string;
+    duration: number;
+}
+
+// https://stackoverflow.com/questions/42136098/array-groupby-in-typescript
+const groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>
+    list.reduce((previous, currentItem) => {
+        const group = getKey(currentItem);
+        if (!previous[group]) previous[group] = [];
+        previous[group].push(currentItem);
+        return previous;
+    }, {} as Record<K, T[]>);
+
+export async function getRecordsAsChartData(
+    deviceID: number,
+    startDate: Date,
+    endDate: Date
+): Promise<ChartData> {
+    let records = await getHandwashingRecords(deviceID, startDate, endDate);
+
+    let filteredRecords = records.map((record) => {
+        let obj: FilteredHandwashRecord = {
+            duration: record.duration,
+            date: new Date(record.timestamp).toLocaleString().split(',')[0],
+        };
+        return obj;
+    });
+
+    let recordGroupByDate = groupBy(filteredRecords, (record) => record.date);
+    let labels: string[] = [];
+    let data: number[] = [];
+    for (const date in recordGroupByDate) {
+        labels.push(date);
+        let recs = recordGroupByDate[date];
+        let total = 0;
+        recs.forEach((rec) => (total += rec.duration));
+        data.push(total / recs.length);
+    }
+    let result: ChartData = {
+        labels: labels,
+        datasets: [
+            {
+                data: data,
+                fill: true,
+                backgroundColor: 'rgba(75,192,192,0.2)',
+                borderColor: 'rgba(75,192,192,1)',
+            },
+        ],
+    };
+
+    return result;
+}
