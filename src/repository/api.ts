@@ -96,6 +96,63 @@ export async function getDeviceData(): Promise<ChartData[]> {
         /*if (wrong) {
             reject(Error('Bad input'));
         }*/
-        setTimeout(() => resolve(dataArray), 5000);
+        setTimeout(() => resolve(dataArray), 100);
+    });
+}
+
+// To use axios generic capabilities
+export interface APIAdminModel {
+    id: number;
+    firstname: string;
+    lastname: string;
+    organization: string;
+    email: string;
+    devices: number[];
+}
+
+export function getDevicesForAdmin(): Promise<Array<number>> {
+    return new Promise<Array<number>>(async (resolve, reject) => {
+        try {
+            let response = await instance.get<APIAdminModel>('admin', {
+                withCredentials: true,
+            });
+
+            let adminModel = response.data;
+            resolve(adminModel.devices);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
+export interface HandwashingRecord {
+    id: number;
+    timestamp: string;
+    duration: number;
+    device: string;
+}
+
+export function getHandwashingRecords(
+    deviceID: number,
+    startDate: Date,
+    endDate: Date
+): Promise<HandwashingRecord[]> {
+    return new Promise<HandwashingRecord[]>(async (resolve, reject) => {
+        try {
+            let response = await instance.get<HandwashingRecord[]>(
+                'handwashing-record/all',
+                {
+                    params: {
+                        start_date: startDate,
+                        end_date: endDate,
+                        device_id: deviceID,
+                    },
+                    withCredentials: true,
+                }
+            );
+            resolve(response.data);
+        } catch (err) {
+            reject(err);
+        }
     });
 }
