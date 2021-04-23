@@ -16,8 +16,8 @@ const GraphChart: React.FC = () => {
     let deviceID = statisticInfo!.deviceID;
     const [plottingInfo, setPlottingInfo] = useState<PlottingInfo | null>(null);
     useEffect(() => {
-        const endDate = new Date('2021-04-22');
-        const startDate = new Date('2021-04-15');
+        const endDate = statisticInfo!.endDate;
+        const startDate = statisticInfo!.startDate;
         getRecordsAsChartData(deviceID, startDate, endDate).then((info) =>
             setPlottingInfo(info)
         );
@@ -32,6 +32,40 @@ const GraphChart: React.FC = () => {
 const GraphArea: React.FC = () => {
     const { statisticInfo } = useContext(StatisticsContext);
     return !statisticInfo ? <Loading /> : <GraphChart />;
+};
+
+const StartDatePicker: React.FC = () => {
+    const { statisticInfo, setStatisticsInfo } = useContext(StatisticsContext);
+    const [startDate, setStartDate] = useState<Date>(() => {
+        const now = new Date();
+        const weekAgo = new Date(now);
+        weekAgo.setDate(now.getDate() - 7);
+        return weekAgo;
+    });
+
+    function handleChange(date: Date) {
+        setStartDate(date);
+        setStatisticsInfo({ ...statisticInfo, startDate: date });
+    }
+    useEffect(
+        () => setStatisticsInfo({ ...statisticInfo, startDate: startDate }),
+        []
+    );
+    return <p>{startDate.toDateString()}</p>;
+};
+
+const EndDatePicker: React.FC = () => {
+    const { statisticInfo, setStatisticsInfo } = useContext(StatisticsContext);
+    const [endDate, setEndDate] = useState<Date>(new Date());
+    function handleChange(date: Date) {
+        setEndDate(date);
+        setStatisticsInfo({ ...statisticInfo, endDate: date });
+    }
+    useEffect(
+        () => setStatisticsInfo({ ...statisticInfo, endDate: endDate }),
+        []
+    );
+    return <p>{endDate.toDateString()}</p>;
 };
 
 const DeviceIDCollectionBtn: React.FC = () => {
@@ -77,6 +111,8 @@ const StatisticsContent: React.FC = () => {
                 <div className="columns">
                     <div className="column is-3">
                         <DeviceIDCollectionBtn />
+                        <StartDatePicker />
+                        <EndDatePicker />
                     </div>
                     <div className="column is-9">
                         <GraphArea />
